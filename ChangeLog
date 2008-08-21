@@ -1,0 +1,99 @@
+Version 0.2.0
+=============
+11/17/04
+* Made CDDE into a daemon. All output besides command-line errors are sent via
+  syslog
+* Sometime since last year libxml changed it's aclocal file so I had to update
+  the required version to 2.6.13 (what I happen to have on my system)
+
+Version 0.1.0
+=============
+10/24/03
+* Changed config file format. It is NOT backwards-compatible. Sorry about that.
+  Now you can different commands for each drive. I also got rid of a couple of
+  tags, so the format is much simpler.
+
+10/21/03
+* Added man pages. See cdde(1) and cdde.xml(5)
+  Thanks Grant Sewell <g.sewell@thymox.uklinux.net>!
+* Added command-line option to run commands for discs already in drive.
+  Thanks Pete Shinners <pete@shinners.org>!
+* Fixed polling delay so it wouldn't sleep initially.
+* Added a batch mode. Will check all drives once then exit immediately.
+  Use the '-b' command-line option.
+
+
+Version 0.0.7
+=============
+1/05/03
+* Increased default wait time while polling
+* Added SVCD support
+  Thanks Piergiorgio Ghezzo <PJ@piggei.com>!
+* Changed how disc_has_dir works. It doesn't use mount, so the program no longer
+  needs to be setuid root!
+  Thanks Charles Vaughn <charlesv@mfos.org>!
+
+  
+Version 0.0.6
+=============
+12/05/02
+* Made it remove a drive from the list when it can't access a drive.
+  Thanks Martin Rasp <martin.rasp@nettwork.com>!
+
+
+Version 0.0.5
+=============
+11/13/02
+* I forgot to malloc() something in 0.0.4 causing it to crash whenever you 
+  insert a data (including dvd/vcd) disc. I fixed this.
+  Thanks Martin Rasp <martin.rasp@nettwork.com>!
+* lowered libxml dependency to 2.4.19 because I got reports of it working on
+  debian 3.0
+
+
+Version 0.0.4
+=============
+11/12/02
+* added command-line options (now can specify alternate config file)
+* drops root privilidges before creating config file
+  (wasn't a big security issue before because you couldn't specify the config file's path)
+
+11/11/02
+* added ability to specify polling delay in config file
+
+11/08/02
+* added vcd and blank cdr support
+
+
+Version 0.0.3
+=============
+
+11/06/02
+* added tags (%mnt%, %dev%) to do actions based on the drive that had a disc inserted
+
+11/05/02
+
+* added support for multiple drives
+* added support for multiple commands
+* added SIGHUP handler to reread config file
+* made it so it didnt run commands on discs in drive at startup
+
+
+Version 0.0.2
+=============
+
+10/28/02
+
+* fixed sigchld handler not getting installed
+  thanks Martin Bammer <martin@tuwien.ac.at>!
+* now does more checking when trying to read config file, and if it doesn't exist, it creates
+  one for you.
+* fixed nasty bug where i didnt allocate enough memory for the \0 at the end of the config filename
+
+
+Version 0.0.1
+=============
+
+10/27/02
+
+* Initial release

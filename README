@@ -1,0 +1,71 @@
+Compact Disc Detect & Execute 0.2.0
+
+Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+For more details see the file COPYING
+
+
+What is cdde?
+=============
+cdde is a program that detects when a cdrom drive on your system has had a
+disc inserted.
+
+When it finds a disc inserted in the drive it will attempt to determine the
+type of disc, and execute a specified command.
+
+This means you can put in a dvd and your favorite dvd software can start,
+or put in a data cd and have it be automatically mounted for you.
+
+Right now cdde can detect the following types of discs:
+	* audio cd
+	* data cd
+	* dvd
+	* mixed audio/data cd
+	* vcd
+	* svcd
+	* blank cdr
+
+For now the dvd checking is just a bit of magic that checks to see if there's
+a "video_ts" directory on the disc. Same goes for the vcd checking: it just
+looks for a "vcd" directory on the disc.
+
+cdde reads its configuration from "~/.cdde.xml" unless otherwise specified on
+the command line.
+
+Please email me <eric@ericlathrop.com> with all feedback/bugs/feature requests.
+It's the only way I can improve this software!
+
+
+Installation & Configuration
+============================
+Read the file INSTALL
+
+
+What's New
+=================
+Read the file CHANGELOG
+
+
+Known Bugs
+==========
+Read the file BUGS
+
+
+Upcoming features
+=================
+Read the file TODO
+

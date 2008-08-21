@@ -1,0 +1,68 @@
+.TH "cdde" "1" "@VERSION@" "Eric Lathrop" ""
+.SH "NAME"
+.LP 
+cdde \- Compact Disc Detect & Execute
+.SH "SYNOPSIS"
+.LP 
+cdde [\fI\-c filename\fP] [\fI\-rbvVh\fP]
+.SH "DESCRIPTION"
+.LP 
+cdde is a program that detects when a cdrom drive on your system has had a
+disc inserted.
+
+When it finds a disc inserted in the drive it will attempt to determine the
+type of disc, and execute a specified command.
+
+This means you can put in a dvd and your favorite dvd software can start,
+or put in a data cd and have it be automatically mounted for you.
+
+Right now cdde can detect the following types of discs:
+        * audio cd
+        * data cd
+        * dvd
+        * mixed audio/data cd
+        * vcd
+        * svcd
+        * blank cdr
+
+For now the dvd checking is just a bit of magic that checks to see if there's
+a "video_ts" directory on the disc. Same goes for the vcd checking: it just
+looks for a "vcd" directory on the disc.
+
+cdde reads its configuration from "~/.cdde.xml" unless otherwise specified on
+the command line.
+.SH "OPTIONS"
+.LP
+.TP
+\fB\-r, \-\-run\fR
+Run commands on disc already in drive when is started.
+.TP
+\fB\-b, \-\-batch\fR
+Batch mode: check all drives once then exit. (implies -r)
+.TP
+\fB\-c, \-\-config\fR <\fIfilename\fP>
+Use the config file <\fIfilename\fP>. (Default is ~/.cdde.xml)
+.TP
+\fB\-v, \-\-verbose\fR
+Print out lots of information.
+.TP
+\fB\-V, \-\-version\fR
+Print out version information.
+.TP
+\fB\-h, \-\-help\fR
+Print Display this help and exit.
+.SH "FILES"
+.LP
+~/.cdde.xml
+.SH "SEE ALSO"
+.LP
+cdde.xml(5)
+.SH "AUTHORS"
+.LP
+Eric Lathrop <eric@ericlathrop.com>
+.SH "WEBSITE"
+For the latest release of cdde, see:
+.br
+http://www.ericlathrop.com/cdde/
+.br
+http://freshmeat.net/projects/cdde/

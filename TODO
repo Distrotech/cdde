@@ -1,0 +1,16 @@
+These are upcoming changes/features in no particular order.
+Please email me any suggestions at <eric@ericlathrop.com>
+
+Polish
+------
+* start using version control
+* make it guess cd drives from fstab when generating sample config files
+
+Features
+--------
+* add support for a command to execute when a disc is ejected
+* see if there's any nice way of un-locking the cdrom drive's door
+  and letting the drive eject without having to unmount the disc.
+  i have a feeling this will be pretty nasty to do, if anyone out there
+  knows anything I'd appreciate _any_ info.
+* support auto-ejecting (see ioctl CDROMEJECT_SW in cdrom.h)

@@ -1,0 +1,73 @@
+.TH "cdde.xml" "5" "@VERSION@" "Eric Lathrop" ""
+.SH "NAME"
+.LP 
+\fBcdde.xml\fR \- Configuration file for cdde
+.SH "DESCRIPTION"
+.LP 
+When cdde is run for the first time, an example xml configuration file (~/.cdde.xml) is created for you:
+
+<?xml version="1.0"?>
+.br
+<cdde delay="5000000">
+  <drive path="/dev/cdrom">
+    <audio command="echo A audio cd was inserted."/>
+    <data command="echo A data cd was inserted."/>
+    <dvd command="echo A dvd was inserted."/>
+    <vcd command="echo A vcd was inserted."/>
+    <svcd command="echo A svcd was inserted."/>
+    <blank command="echo A blank cdr was inserted."/>
+    <mixed command="echo A mixed (audio/data) cd was inserted."/>
+  </drive>
+.br 
+</cdde>
+
+This default file is not very useful, and so I suggest you edit it to suite your needs before running cdde again.  You may add as many drive entries, or commands as you like. If multiple entries are found for a type of disc then all entries will be run in the order they are found.
+
+The specific device in use can be passed to the command with one of the following special tags:
+
+  %dev%  \-  is replaced with the device name of the cdrom that
+            just had a disc inserted
+            
+  %mnt%  \-  is replaced with the listed mount point for the
+            cdrom that just had a disc inserted
+ 
+Note:   %mnt% is determined through your fstab (usually located in /etc) file. If you do not have a listing for each <drive> in the fstab this will cause problems.
+
+This way, you can tell your video player which device to use when playing a VCD, for example.
+
+.SH "EXAMPLE"
+.LP
+This is the \fB~/.cdde.xml\fR that I use:
+
+<?xml version="1.0"?>
+.br
+<cdde delay="5000000">
+  <drive path="/dev/cdroms/cdrom0"/>
+    <audio command="xmms %mnt%"/>
+    <data command="mount %mnt%"/>
+    <dvd
+     command="xterm -iconic -e mplayer -fs -xineramascreen 1 -dvd 1"/>
+    <vcd
+     command="xterm -iconic -e mplayer -fs -xineramascreen 1 -vcd 1"/>
+    <svcd
+     command="xterm -iconic -e mplayer -fs -xineramascreen 1 -vcd 1"/>
+    <blank command="gcombust"/>
+    <mixed command="mount %mnt%"/>
+  </drive>
+.br
+</cdde>
+.SH "FILES"
+.LP 
+~/.cdde.xml
+.SH "SEE ALSO"
+.LP 
+cdde(1)
+.SH "AUTHORS"
+.LP 
+Eric Lathrop <eric@ericlathrop.com>
+.SH "WEBSITE"
+For the latest release of cdde, see:
+.br 
+http://www.ericlathrop.com/cdde/
+.br
+http://freshmeat.net/projects/cdde/
