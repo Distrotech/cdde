@@ -1,3 +1,15 @@
+Version 0.2.1
+=============
+08/22/08
+* First release at SourceForge!
+* New maintainer: Stanislav Maslovski <stanislav.maslovski@gmail.com>.
+* Various automake and compilation fixes.
+* Use system() instead of execvp() to start external commands.
+* Use strdup() instead of substr() where possible.
+* Code of string.c:replace() rewritten.
+* Functions substr(), indexof(), trim(), trim_destruct() from string.c
+  removed as not needed anymore.
+
 Version 0.2.0
 =============
 11/17/04
