@@ -28,6 +28,8 @@ For more details see the file COPYING
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#include <string.h> 
+#include <limits.h>
 #include <linux/cdrom.h>
 #include <fstab.h>
 #include <signal.h>
