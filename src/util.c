@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 For more details see the file COPYING.
 
 Changes:
-	2008-08-22, Stanislav Maslovski:
+	2008/08/22, Stanislav Maslovski:
 	    Use system() instead of execvp() to start external commands.
+	    Get rid of substr().
 */
 
 
@@ -111,7 +112,7 @@ void parseargs(int argc, char ** argv)
 		switch (c)
 		{
 			case 'c':
-				filename = (char *) substr(optarg, 0, strlen(optarg));
+				filename = strdup(optarg);
 				break;
 			case 'V':
 				printf("%s\n", VERSION);
