@@ -16,3 +16,5 @@ cdde_SOURCES = \
 	list.c list.h
 
 cdde_LDADD = @PACKAGE_LIBS@
+
+AUTOMAKE_OPTIONS = nostdinc
