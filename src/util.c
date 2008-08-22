@@ -2,6 +2,7 @@
 Compact Disc Detect & Execute
 
 Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+Copyright(C) 2008, Stanislav Maslovski <stanislav.maslovski@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,7 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-For more details see the file COPYING
+For more details see the file COPYING.
+
+Changes:
+	2008-08-22, Stanislav Maslovski:
+	    Use system() instead of execvp() to start external commands.
 */
 
 
@@ -55,74 +60,27 @@ void sigchld(int signum)
 // wait for it to exit before returning
 void execute(const char * command)
 {
-	char * fixed_str;
-	char ** args;
-	int num_args;
-	int curr_arg;
-	int temp_len;
-	int found_start;
-	int pos;
-	
 	// exit if nothing to execute;
-	if (command == "") return;
+	if (!command || !strlen(command)) return;
 
 	numchildren++;
 	signal(SIGCHLD, sigchld);
 
 	if (fork() == 0)
 	{
+		int status;
 		// im the child
 		// i get to execute the command
 
-		// trim whitespace from the command
-		fixed_str = strdup(command);
-		fixed_str = (char *) trim_destruct(&fixed_str);
-
-		// find the number of arguments
-		num_args = 0;
-		found_start = 0;
-		for (pos=0; pos<strlen(fixed_str); pos++)
-		{
-			if ((!found_start) && (fixed_str[pos] != ' '))
-			{
-				found_start = 1;
-				num_args++;
-			}
-
-			if ((found_start) && (fixed_str[pos] == ' '))
-			{
-				found_start = 0;
-			}
+		// run the command
+		status = system(command);
+		if (status == -1) {
+			syslog(LOG_ERR, "Error: Call to system() failed.");
+			exit(2);
 		}
-
-		// create the argument array
-		args = malloc((num_args + 1) * sizeof(char *));
-		found_start = 0;
-		curr_arg = 0;
-		temp_len = strlen(fixed_str);
-		for (pos=0; pos<temp_len; pos++)
-		{
-			if ((!found_start) && (fixed_str[pos] != ' '))
-			{
-				found_start = 1;
-				args[curr_arg] = &fixed_str[pos];
-				curr_arg++;
-			}
-
-			if ((found_start) && (fixed_str[pos] == ' '))
-			{
-				found_start = 0;
-				fixed_str[pos] = '\0';
-			}
-		}
-		args[curr_arg] = NULL;
-
-		// call execvp
-		execvp(args[0], args);
-		
-		// should never get here
-		syslog(LOG_ERR, "Error: Command execution failed");
-		exit(2);
+		if (status != 0)
+			syslog(LOG_WARNING, "Warning: Command returned non-zero status.");
+		exit(0);
 	}
 
 	// i'm the parent
