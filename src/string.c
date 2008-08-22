@@ -23,74 +23,45 @@ For more details see the file COPYING.
 Changes:
 	2008/08/22, Stanislav Maslovski:
 	    Removed indexof(), trim() and trim_destruct() functions.
+	    Got rid of substr(), replace() rewritten.
 */
-
 
 #include <stdlib.h>
 #include <string.h>
 
 #include "string.h"
 
-// create a smaller string
-// from part of a larger string
-// (note: user must free() the returned string when done)
-//
-char * substr(const char * str, unsigned int start, unsigned int length)
-{
-	char * result = "";
-	int i;
-	int stop = start+length;
-
-	if ((start >= 0) && (start <= stop) && (stop <= strlen(str)))
-	{
-		result = malloc((stop-start+1)*sizeof(char));
-		if (result == NULL)
-		{
-			return NULL;
-		}
-		for (i=0; i<(stop-start); i++)
-		{
-			result[i] = str[start+i];
-		}
-		result[i] = '\0';
-	}
-	return result;
-}
-
 // replace all  occourances of oldstr with newstr in str
 // (note: user must free() the returned string when done)
 //
 char * replace(const char * str, const char * oldstr, const char * newstr)
 {
-	char * pos;
-	char * start;
-	char * end;
-	char * retval = substr(str, 0, strlen(str));
-	char * temp;
+	int len, oldlen, newlen, cnt;
+	char *buf, *dst;
+	const char *left, *right;
 
-	while ((pos = (char *)strstr(retval, oldstr)) != NULL)
+	len = strlen(str);
+	oldlen = strlen(oldstr);
+	if (len == 0 || oldlen == 0)
+		return strdup(str);
+
+	newlen = strlen(newstr);
+	buf = malloc(len + (len*newlen)/oldlen + 1);
+
+	dst = buf; left = str;
+	while (right = strstr(left, oldstr))
 	{
-		start = substr(retval, 0, pos-retval);
-		end = substr(pos, strlen(oldstr), strlen(pos)-strlen(oldstr));
-
-		temp = malloc(sizeof(char) * (strlen(start) + strlen(newstr) + strlen(end) + 1));
-		if (temp == NULL)
-		{
-			free(start);
-			free(end);
-			return NULL;
-		}
-		temp[0] = '\0';
-		temp = (char *)strcat(temp, start);
-		temp = (char *)strcat(temp, newstr);
-		temp = (char *)strcat(temp, end);
-		
-		free(retval);
-		retval = temp;
-		free(start);
-		free(end);
+		cnt = right - left;
+		memcpy(dst, left, cnt);
+		dst += cnt;
+		memcpy(dst, newstr, newlen);
+	    	dst += newlen;
+		left = right + oldlen;
 	}
-	return retval;
+
+	strcpy(dst, left);
+	buf = realloc(buf, strlen(buf) + 1);
+	return buf;
 }
 
 // replace all occourances of oldstr with newstr in str

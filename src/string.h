@@ -23,13 +23,12 @@ For more details see the file COPYING.
 Changes:
 	2008/08/22, Stanislav Maslovski:
 	    Removed indexof(), trim() and trim_destruct() functions.
+	    Got rid of substr(), replace() rewritten.
 */
 
 
 #ifndef __string_h__
 #define __string_h__
-
-char * substr(const char * str, unsigned int start, unsigned int length);
 
 char * replace(const char * str, const char * oldstr, const char * newstr);
 char * replace_destruct(char ** str, const char * oldstr, const char * newstr);
