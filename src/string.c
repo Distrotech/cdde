@@ -31,7 +31,7 @@ Changes:
 
 #include "string.h"
 
-// replace all  occourances of oldstr with newstr in str
+// replace all  occurences of oldstr with newstr in str
 // (note: user must free() the returned string when done)
 //
 char * replace(const char * str, const char * oldstr, const char * newstr)
@@ -64,9 +64,6 @@ char * replace(const char * str, const char * oldstr, const char * newstr)
 	return buf;
 }
 
-// replace all occourances of oldstr with newstr in str
-// (note: user must free() the returned string when done)
-//
 // this is different from replace() in that it destroys
 // the original string, and replaces it with the replace()ed version
 //
@@ -77,4 +74,3 @@ char * replace_destruct(char ** str, const char * oldstr, const char * newstr)
 	*str = newstring;
 	return newstring;
 }
-
