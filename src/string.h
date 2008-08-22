@@ -2,6 +2,7 @@
 Compact Disc Detect & Execute
 
 Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+Copyright(C) 2008, Stanislav Maslovski <stanislav.maslovski@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,19 +18,18 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-For more details see the file COPYING
+For more details see the file COPYING.
+
+Changes:
+	2008/08/22, Stanislav Maslovski:
+	    Removed indexof(), trim() and trim_destruct() functions.
 */
 
 
 #ifndef __string_h__
 #define __string_h__
 
-int indexof(const char * str, char c, int start);
-
 char * substr(const char * str, unsigned int start, unsigned int length);
-
-char * trim(const char * str);
-char * trim_destruct(char ** str);
 
 char * replace(const char * str, const char * oldstr, const char * newstr);
 char * replace_destruct(char ** str, const char * oldstr, const char * newstr);

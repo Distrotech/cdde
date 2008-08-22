@@ -2,6 +2,7 @@
 Compact Disc Detect & Execute
 
 Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+Copyright(C) 2008, Stanislav Maslovski <stanislav.maslovski@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,7 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-For more details see the file COPYING
+For more details see the file COPYING.
+
+Changes:
+	2008/08/22, Stanislav Maslovski:
+	    Removed indexof(), trim() and trim_destruct() functions.
 */
 
 
@@ -25,22 +30,6 @@ For more details see the file COPYING
 #include <string.h>
 
 #include "string.h"
-
-// find the first occurance of a character
-// in a string (from start position)
-//
-int indexof(const char * str, char c, int start)
-{
-	int i;
-
-	if (start < 0) start = 0;
-
-	for (i=start; i<strlen(str); i++)
-	{
-		if (str[i] == c) return i;
-	}
-	return -1;
-}
 
 // create a smaller string
 // from part of a larger string
@@ -66,44 +55,6 @@ char * substr(const char * str, unsigned int start, unsigned int length)
 		result[i] = '\0';
 	}
 	return result;
-}
-
-// creates a copy of a string but without
-// leading or trailing whitespace;
-// (note: user must free() the returned string when done)
-//
-char * trim(const char * str)
-{
-	int start = 0;
-	int stop = strlen(str);
-
-	while ((
-			(str[start] == ' ') ||
-			(str[start] == '\t') ||
-			(str[start] == '\n')
-		) && (start < strlen(str))) start++;
-	while ((
-			(str[stop-1] == ' ') ||
-			(str[stop-1] == '\t') ||
-			(str[stop-1] == '\n')
-		) && (stop > -1)) stop--;
-
-	return substr(str, start, stop-start);
-}
-
-// creates a copy of a string but without
-// leading or trailing whitespace;
-// (note: user must free() the returned string when done)
-//
-// this is different from trim() in that it destroys
-// the original string, and replaces it with the trim()ed version
-//
-char * trim_destruct(char ** str)
-{
-	char * newstring = trim(*str);
-	free(*str);
-	*str = newstring;
-	return newstring;
 }
 
 // replace all  occourances of oldstr with newstr in str
