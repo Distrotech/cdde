@@ -2,6 +2,7 @@
 Compact Disc Detect & Execute
 
 Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+Copyright(C) 2008, Stanislav Maslovski <stanislav.maslovski@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,7 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-For more details see the file COPYING
+For more details see the file COPYING.
+
+Changes:
+	2008/08/22, Stanislav Maslovski:
+	    Use strdup() instead of substr().
 */
 
 
@@ -131,7 +136,7 @@ void executeall(drive * d, int cmdtype)
 		syslog(LOG_ERR, "Error: couldn't get %s entry for %s", _PATH_FSTAB, d->filename);
 		return;
 	} else {
-		mountpoint = substr(cdfs->fs_file, 0, strlen(cdfs->fs_file));
+		mountpoint = strdup(cdfs->fs_file);
 	}
 	
 	for (i=list_size(d->commands[cmdtype])-1; i>=0; i--)
