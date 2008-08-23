@@ -174,7 +174,7 @@ int saveconfig(char * filename)
 
 	// add commands
 	cur = xmlNewNode(NULL, (xmlChar *) "audio");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A audio cd was inserted.");
+	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo An audio cd was inserted.");
 	xmlAddChild(subroot, cur);
 
 	// add commands
