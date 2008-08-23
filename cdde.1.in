@@ -11,10 +11,10 @@ cdde is a program that detects when a cdrom drive on your system has had a
 disc inserted.
 
 When it finds a disc inserted in the drive it will attempt to determine the
-type of disc, and execute a specified command.
+type of the disc, and execute a specified command.
 
-This means you can put in a dvd and your favorite dvd software can start,
-or put in a data cd and have it be automatically mounted for you.
+This means you can put in a dvd and your favorite dvd software will start,
+or put in a data cd and it will be automatically mounted for you.
 
 Right now cdde can detect the following types of discs:
         * audio cd
@@ -23,7 +23,7 @@ Right now cdde can detect the following types of discs:
         * mixed audio/data cd
         * vcd
         * svcd
-        * blank cdr
+        * blank cdr/dvdr
 
 For now the dvd checking is just a bit of magic that checks to see if there's
 a "video_ts" directory on the disc. Same goes for the vcd checking: it just
@@ -60,9 +60,9 @@ cdde.xml(5)
 .SH "AUTHORS"
 .LP
 Eric Lathrop <eric@ericlathrop.com>
+.br
+Stanislav Maslovski <stanislav.maslovski@gmail.com>
 .SH "WEBSITE"
 For the latest release of cdde, see:
 .br
-http://www.ericlathrop.com/cdde/
-.br
-http://freshmeat.net/projects/cdde/
+http://cdde.sourceforge.net/

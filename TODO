@@ -1,9 +1,8 @@
 These are upcoming changes/features in no particular order.
-Please email me any suggestions at <eric@ericlathrop.com>
+Please report any suggestions at http://sourceforge.net/projects/cdde/
 
 Polish
 ------
-* start using version control
 * make it guess cd drives from fstab when generating sample config files
 
 Features

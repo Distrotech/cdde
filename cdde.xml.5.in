@@ -4,24 +4,28 @@
 \fBcdde.xml\fR \- Configuration file for cdde
 .SH "DESCRIPTION"
 .LP 
-When cdde is run for the first time, an example xml configuration file (~/.cdde.xml) is created for you:
+When cdde is run for the first time, an example xml configuration file
+(~/.cdde.xml) is created for you:
 
 <?xml version="1.0"?>
 .br
 <cdde delay="5000000">
   <drive path="/dev/cdrom">
-    <audio command="echo A audio cd was inserted."/>
+    <audio command="echo An audio cd was inserted."/>
     <data command="echo A data cd was inserted."/>
     <dvd command="echo A dvd was inserted."/>
     <vcd command="echo A vcd was inserted."/>
     <svcd command="echo A svcd was inserted."/>
-    <blank command="echo A blank cdr was inserted."/>
+    <blank command="echo A blank cdr/dvdr was inserted."/>
     <mixed command="echo A mixed (audio/data) cd was inserted."/>
   </drive>
 .br 
 </cdde>
 
-This default file is not very useful, and so I suggest you edit it to suite your needs before running cdde again.  You may add as many drive entries, or commands as you like. If multiple entries are found for a type of disc then all entries will be run in the order they are found.
+This default file is not very useful, and so I suggest you to edit it to your needs before
+running cdde again.  You may add as many drive entries, or commands as you like.
+If multiple entries are found for a type of disc then all entries will be
+run in the order they are found.
 
 The specific device in use can be passed to the command with one of the following special tags:
 
@@ -37,7 +41,7 @@ This way, you can tell your video player which device to use when playing a VCD,
 
 .SH "EXAMPLE"
 .LP
-This is the \fB~/.cdde.xml\fR that I use:
+This is an example of \fB~/.cdde.xml\fR file:
 
 <?xml version="1.0"?>
 .br
@@ -65,9 +69,9 @@ cdde(1)
 .SH "AUTHORS"
 .LP 
 Eric Lathrop <eric@ericlathrop.com>
+.br
+Stanislav Maslovski <stanislav.maslovski@gmail.com>
 .SH "WEBSITE"
 For the latest release of cdde, see:
 .br 
-http://www.ericlathrop.com/cdde/
-.br
-http://freshmeat.net/projects/cdde/
+http://cdde.sourceforge.net/
