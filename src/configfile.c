@@ -199,7 +199,7 @@ int saveconfig(char * filename)
 
 	// add commands
 	cur = xmlNewNode(NULL, (xmlChar *) "blank");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A blank cdr was inserted.");
+	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A blank cdr/dvdr was inserted.");
 	xmlAddChild(subroot, cur);
 
 	// add commands
