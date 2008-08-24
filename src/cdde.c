@@ -25,6 +25,7 @@ Changes:
 	    Use strdup() instead of substr().
 	2008/08/24:
 	    Add support for big-endian machines.
+	    Add media change detection.
 */
 
 
@@ -286,6 +287,21 @@ int checkdrive(drive * d)
 	{
 		// if there's a ok disc in there
 		case CDS_DISC_OK:
+			// check for media change
+			if (d->mediachange)
+			{
+				status = ioctl(fd, CDROM_MEDIA_CHANGED, 0);
+				if (status == 1)
+				{
+					// disc changed, will run checks
+					if (verbose) syslog(LOG_INFO, "Detected media change!");
+					d->dontexecute = 0;
+				} else if (status == -1 && errno == ENOSYS) {
+					if (verbose) syslog(LOG_INFO, "Drive can't detect media change.");
+					d->mediachange = 0;
+				}
+			}
+
 			if (d->dontexecute)
 			{
 				// release the device

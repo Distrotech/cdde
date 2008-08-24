@@ -63,6 +63,7 @@ typedef struct _drive
 	char * filename;
 	list * commands[NUM_DATA_TYPES];
 	int dontexecute;
+	int mediachange;
 } drive;
 
 

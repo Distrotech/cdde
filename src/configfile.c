@@ -120,6 +120,7 @@ void parsedrive(xmlNodePtr cur)
 		d->commands[i] = NULL;
 	}
 	d->dontexecute = dontrunfirst;
+	d->mediachange = 1;
 	
 	d->filename = xmlGetProp(cur, "path");
 	
