@@ -23,6 +23,8 @@ For more details see the file COPYING.
 Changes:
 	2008/08/22, Stanislav Maslovski:
 	    Use strdup() instead of substr().
+	2008/08/24:
+	    Add support for big-endian machines.
 */
 
 
@@ -149,6 +151,20 @@ void executeall(drive * d, int cmdtype)
 }
 
 
+// read a both-endian field of the specified width
+// and advance the file pointer respectively
+void read_bothendian(int fd, void * var, int width)
+{
+#ifdef WORDS_BIGENDIAN
+	lseek(fd, width, SEEK_CUR);
+#endif
+	read(fd, var, width);
+#ifndef WORDS_BIGENDIAN
+	lseek(fd, width, SEEK_CUR);
+#endif
+}
+
+
 // determine if the device has a directory in its top level
 //
 // device is the filename of the special device file
@@ -161,11 +177,11 @@ int disc_has_dir(const char * device, const char * directory)
 	int ret = 0; // return value
 	int fd = 0; // file descriptor for drive
 	unsigned short bs; // the discs block size
-	unsigned short ts; // the path table size
+	unsigned int ts; // the path table size
 	unsigned int tl; // the path table location (in blocks)
 	int i;
-	unsigned int len_di = 0; // length of the directory name in current path table entry
-	unsigned int parent = 0; // the number of the parent directory's path table entry
+	unsigned char len_di = 0; // length of the directory name in current path table entry
+	unsigned short parent = 0; // the number of the parent directory's path table entry
 	char * dirname = NULL; // filename for the current path table entry
 	int pos = 0; // our position into the path table
 	int curr_record = 1; // the path table record we're on
@@ -179,23 +195,29 @@ int disc_has_dir(const char * device, const char * directory)
 	}
 
 	// read the block size
+	// (stored as both-endian word)
 	lseek(fd, 0x8080, SEEK_CUR);
-	read(fd, &bs, 2);
+	read_bothendian(fd, &bs, 2);
 
 	// read in size of path table
-	lseek(fd, 2, SEEK_CUR);
-	read(fd, &ts, 2);
+	// (stored as both-endian double word)
+	read_bothendian(fd, &ts, 4);
 	
+#ifdef WORDS_BIGENDIAN
+	// skip little-endian table data
+	lseek(fd, 8, SEEK_CUR);
+#endif
 	// read in which block path table is in
-	lseek(fd, 6, SEEK_CUR);
-	read(fd, &tl, 4);
+	// (stored as both-endian double word)
+	read_bothendian(fd, &tl, 4);
 	
-	// seek to the path table
+	// seek to the path table (either little-endian or big-endian one)
 	lseek(fd, ((int)(bs) * tl), SEEK_SET);
 	
 	// loop through the path table entries
 	while (pos < ts)
 	{
+		// the table data are in correct endianness
 		// get the length of the filename of the current entry
 		read(fd, &len_di, 1);
 
@@ -205,8 +227,7 @@ int disc_has_dir(const char * device, const char * directory)
 		read(fd, &parent, 2);
 		
 		// allocate and zero a string for the filename
-		dirname = (char *) malloc(len_di+1);
-		memset(dirname, 0, len_di+1);
+		dirname = calloc(len_di+1, 1);
 		
 		// read the name
 		read(fd, dirname, len_di);
