@@ -333,7 +333,7 @@ int checkdrive(drive * d)
 			{
 				case CDS_AUDIO:
 					// found a audio cd
-					if (verbose) syslog(LOG_INFO, "Detected an audio cd!\n");
+					if (verbose) syslog(LOG_INFO, "Detected an audio CD!");
 					executeall(d, DATA_AUDIO);
 					break;
 				case CDS_DATA_1:
@@ -341,26 +341,26 @@ int checkdrive(drive * d)
 					// found a data cd
 					if (disc_has_dir(d->filename, "video_ts") != 0)
 					{
-						if (verbose) syslog(LOG_INFO, "Detected a DVD");
+						if (verbose) syslog(LOG_INFO, "Detected a DVD!");
 						executeall(d, DATA_DVD);
 					} else if (disc_has_dir(d->filename, "vcd") != 0) {
-						if (verbose) syslog(LOG_INFO, "Detected a VCD");
+						if (verbose) syslog(LOG_INFO, "Detected a VCD!");
 						executeall(d, DATA_VCD);
 					} else if (disc_has_dir(d->filename, "svcd") != 0) {
-						if (verbose) syslog(LOG_INFO, "Detected a SVCD");
+						if (verbose) syslog(LOG_INFO, "Detected a SVCD!");
 						executeall(d, DATA_SVCD);
 					} else {
-						if (verbose) syslog(LOG_INFO, "Detected a data CD");
+						if (verbose) syslog(LOG_INFO, "Detected a data CD!");
 						executeall(d, DATA_DATA);
 					}
 					break;
 				case CDS_MIXED:
 					// found a mixed cd
-					if (verbose) syslog(LOG_INFO, "Detected a mixed audio/data cd!");
+					if (verbose) syslog(LOG_INFO, "Detected a mixed audio/data CD!");
 					executeall(d, DATA_MIXED);
 					break;
 				default:
-					if (verbose) syslog(LOG_INFO, "Could not determine disc type: Doing nothing!\n");
+					if (verbose) syslog(LOG_INFO, "Could not determine disc type: Doing nothing!");
 					break;
 			}
 			break;
