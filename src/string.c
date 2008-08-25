@@ -69,7 +69,7 @@ char * replace(const char * str, const char * oldstr, const char * newstr)
 // this is different from replace() in that it destroys
 // the original string, and returns the replace()ed version
 //
-char * replace_destruct(const char * str, const char * oldstr, const char * newstr)
+char * replace_destruct(char * str, const char * oldstr, const char * newstr)
 {
 	char * newstring = replace(str, oldstr, newstr);
 	free(str);
