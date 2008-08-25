@@ -2,6 +2,7 @@
 Compact Disc Detect & Execute
 
 Copyright(C) 2002-04 Eric Lathrop <eric@ericlathrop.com>
+Copyright(C) 2008, Stanislav Maslovski <stanislav.maslovski@gmail.com>
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,7 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-For more details see the file COPYING
+For more details see the file COPYING.
+
+Changes:
+	2008/08/25, Stanislav Maslovski:
+	    Fixed segfault when property "command" in not defined.
 */
 
 
@@ -132,14 +137,15 @@ void parsedrive(xmlNodePtr cur)
 		{
 			if (!xmlStrcmp(cur->name, (const xmlChar *) datatags[i]))
 			{
-				data = xmlGetProp(cur, "command");
-				d->commands[i] = list_push(d->commands[i], data);
-				if (d->commands[i] == NULL)
+				if (data = xmlGetProp(cur, "command"))
 				{
-					syslog(LOG_ERR, "Error: Couldn't allocate memory");
-					exit(1);
+					d->commands[i] = list_push(d->commands[i], data);
+					if (d->commands[i] == NULL)
+					{
+						syslog(LOG_ERR, "Error: Couldn't allocate memory");
+						exit(1);
+					}
 				}
-				
 				break;
 			}
 		}
