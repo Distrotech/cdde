@@ -33,6 +33,6 @@ Changes:
 #define __string_h__
 
 char * replace(const char * str, const char * oldstr, const char * newstr);
-char * replace_destruct(const char * str, const char * oldstr, const char * newstr);
+char * replace_destruct(char * str, const char * oldstr, const char * newstr);
 
 #endif
