@@ -1,3 +1,13 @@
+Version 0.3.1
+=============
+08/25/08
+* Added support for big-endian machines.
+* If drive supports media change detection it will be used
+  in addition to the old method.
+* Fixed a segfault when property "command" is not defined
+  (for example, when there is a typo in the config file).
+* Other minor fixes.
+
 Version 0.3.0
 =============
 08/23/08
