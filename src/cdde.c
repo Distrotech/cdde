@@ -28,6 +28,7 @@ Changes:
 	    Add media change detection.
 	2008/08/25:
 	    Treat errors better in executeall().
+	    Open device in blocking mode in disc_has_dir().
 */
 
 
@@ -192,7 +193,7 @@ int disc_has_dir(const char * device, const char * directory)
 	int curr_record = 1; // the path table record we're on
 	
 	// open the drive
-	fd = open(device, O_RDONLY | O_NONBLOCK);
+	fd = open(device, O_RDONLY);
 	if (fd == -1)
 	{
 		syslog(LOG_ERR, "Error: Failed to open device %s", device);
