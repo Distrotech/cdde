@@ -26,6 +26,8 @@ Changes:
 	2008/08/24:
 	    Add support for big-endian machines.
 	    Add media change detection.
+	2008/08/25:
+	    Treat errors better in executeall().
 */
 
 
@@ -130,22 +132,24 @@ void executeall(drive * d, int cmdtype)
 {
 	int i;
 	char * command;
-	
-	// get fstab info on where the device's mount point is
-	struct fstab * cdfs = getfsspec(d->filename);
-	char * mountpoint;
-	if (cdfs == NULL)
-	{
-		syslog(LOG_ERR, "Error: couldn't get %s entry for %s", _PATH_FSTAB, d->filename);
-		return;
-	} else {
-		mountpoint = strdup(cdfs->fs_file);
-	}
-	
+
 	for (i=list_size(d->commands[cmdtype])-1; i>=0; i--)
 	{
 		command = replace(list_nth(d->commands[cmdtype], i), "%dev%", d->filename);
-		command = replace_destruct(&command, "%mnt%", mountpoint);
+		if (strstr(command, "%mnt%"))
+		{
+			// get fstab info on where the device's mount point is
+			struct fstab * cdfs = getfsspec(d->filename);
+			if (cdfs)
+				command = replace_destruct(command, "%mnt%", cdfs->fs_file);
+			else {
+				syslog(LOG_ERR,
+					"Error: couldn't get %s entry for %s when executing \"%s\"",
+					_PATH_FSTAB, d->filename, command);
+				free(command);
+				continue;
+			}
+		}
 		execute(command);
 		free(command);
 	}
@@ -297,7 +301,8 @@ int checkdrive(drive * d)
 					if (verbose) syslog(LOG_INFO, "Detected media change!");
 					d->dontexecute = 0;
 				} else if (status == -1 && errno == ENOSYS) {
-					if (verbose) syslog(LOG_INFO, "Drive can't detect media change.");
+					syslog(LOG_WARNING, "Drive %s can't detect media change.",
+								d->filename);
 					d->mediachange = 0;
 				}
 			}

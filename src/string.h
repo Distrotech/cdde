@@ -24,6 +24,8 @@ Changes:
 	2008/08/22, Stanislav Maslovski:
 	    Removed indexof(), trim() and trim_destruct() functions.
 	    Got rid of substr(), replace() rewritten.
+	2008/08/25:
+	    Simplified replace_destruct().
 */
 
 
@@ -31,6 +33,6 @@ Changes:
 #define __string_h__
 
 char * replace(const char * str, const char * oldstr, const char * newstr);
-char * replace_destruct(char ** str, const char * oldstr, const char * newstr);
+char * replace_destruct(const char * str, const char * oldstr, const char * newstr);
 
 #endif

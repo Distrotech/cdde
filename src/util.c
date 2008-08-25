@@ -24,6 +24,8 @@ Changes:
 	2008/08/22, Stanislav Maslovski:
 	    Use system() instead of execvp() to start external commands.
 	    Get rid of substr().
+	2008/08/25:
+	    Treat errors better.
 */
 
 
@@ -76,11 +78,15 @@ void execute(const char * command)
 		// run the command
 		status = system(command);
 		if (status == -1) {
-			syslog(LOG_ERR, "Error: Call to system() failed.");
+			syslog(LOG_ERR,
+				"Error: Call to system() failed when executing \"%s\"",
+				command);
 			exit(2);
 		}
 		if (status != 0)
-			syslog(LOG_WARNING, "Warning: Command returned non-zero status.");
+			syslog(LOG_WARNING,
+				"Warning: Command \"%s\" returned non-zero status.",
+				command);
 		exit(0);
 	}
 
