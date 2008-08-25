@@ -22,7 +22,7 @@ For more details see the file COPYING.
 
 Changes:
 	2008/08/25, Stanislav Maslovski:
-	    Fixed segfault when property "command" in not defined.
+	    Fixed segfaults when properties "path" or "command" are not defined.
 */
 
 
@@ -112,22 +112,31 @@ int loadconfig(char * filename)
 void parsedrive(xmlNodePtr cur)
 {
 	int i;
-	drive  * d = malloc(sizeof(drive));
+	drive * d;
 	xmlChar * data;
 	
-	if (d == NULL)
+	data = xmlGetProp(cur, "path");
+	if (!data)
 	{
-		syslog(LOG_ERR, "Error: Couldn't allocate memory for drive");
+		syslog(LOG_WARNING,
+			"Warning: no \"path\" property defined for drive, skipping.");
+		return;
+	}
+
+	d = malloc(sizeof(drive));
+	if (!d)
+	{
+		syslog(LOG_ERR, "Error: Couldn't allocate memory for drive.");
 		exit(1);
 	}
+
+	d->filename = data;
 	for (i=0; i<NUM_DATA_TYPES; i++)
 	{
 		d->commands[i] = NULL;
 	}
 	d->dontexecute = dontrunfirst;
 	d->mediachange = 1;
-	
-	d->filename = xmlGetProp(cur, "path");
 	
 	// search it's children for commands, and add them
 	cur = cur->xmlChildrenNode;
