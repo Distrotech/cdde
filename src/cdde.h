@@ -92,6 +92,6 @@ int disc_has_dir(const char * device, const char * directory);
 int checkdrive(drive * d);
 
 // remove a drive from the list
-void removedrive(unsigned int drivenum);
+list * removedrive(list * entry);
 
 #endif

@@ -29,6 +29,8 @@ Changes:
 	2008/08/25:
 	    Treat errors better in executeall().
 	    Open device in blocking mode in disc_has_dir().
+	2008/08/31:
+	    Adapted for simplified lists.
 */
 
 
@@ -82,10 +84,8 @@ void sighup(int signum)
 	syslog(LOG_INFO, "Caught SIGHUP, re-reading config file.");
 	
 	// free old stuff
-	while (list_size(drives) > 0)
-	{
-		removedrive(0);
-	}
+	while (drives != NULL)
+		removedrive(drives);
 	
 	// make sure the config file is there
 	if (stat(filename, &fileinfo) == -1)
@@ -118,10 +118,8 @@ void sighup(int signum)
 	}
 
 	// make sure there's a drive to check
-	if (list_size(drives) == 0)
-	{
+	if (drives == NULL)
 		syslog(LOG_WARNING, "Warning: No drives to poll!");
-	}
 
 	// re-install the signal handler
 	signal(SIGHUP, sighup);
@@ -131,12 +129,12 @@ void sighup(int signum)
 // executes all commands for a related disc type
 void executeall(drive * d, int cmdtype)
 {
-	int i;
+	list * entry;
 	char * command;
 
-	for (i=list_size(d->commands[cmdtype])-1; i>=0; i--)
+	for (entry = d->commands[cmdtype]; entry != NULL; entry = list_next(entry))
 	{
-		command = replace(list_nth(d->commands[cmdtype], i), "%dev%", d->filename);
+    		command = replace(list_get(entry), "%dev%", d->filename);
 		if (strstr(command, "%mnt%"))
 		{
 			// get fstab info on where the device's mount point is
@@ -383,23 +381,26 @@ int checkdrive(drive * d)
 
 
 // remove a drive from the list
-void removedrive(unsigned int drivenum)
+list * removedrive(list * entry)
 {
 	xmlChar * data;
+	list * next;
 	drive * d;
 	int i;
 	
-	drives = list_removenth(drives, (void **)&d, drivenum);
+	next = list_next(entry);
+	drives = list_pop(drives, entry, (void **)&d);
 	
 	for (i=0; i<NUM_DATA_TYPES; i++)
 	{
-		while (list_size(d->commands[i]) > 0)
+		while (d->commands[i] != NULL)
 		{
-			d->commands[i] = list_pop(d->commands[i], (void **)&data);
+			d->commands[i] = list_pop(d->commands[i], d->commands[i], (void **)&data);
 			xmlFree(data);
 		}
 	}
 	free(d);
+	return next;
 }
 
 
@@ -455,31 +456,28 @@ int main(int argc, char ** argv)
 	}
 
 	// make sure there's a drive to check
-	if (list_size(drives) == 0)
-	{
+	if (drives == NULL)
 		syslog(LOG_WARNING, "Warning: No drives to poll");
-	}
 	
 	// pause for "delay" microseconds and check the drive forever
 	while (keeprunning)
 	{
-		for (i=0; i<list_size(drives); i++)
-		{
-			if (checkdrive((drive *)list_nth(drives, i)) != 0)
-			{
-				removedrive(i);
-				i--;
-			}
-		}
+		list * entry = drives;
+
+		while (entry != NULL)
+			if (checkdrive(list_get(entry)) != 0)
+				entry = removedrive(entry);
+			else
+				entry = list_next(entry);
+
 		if (batchmode) break;
 		usleep(delay);
 	}
 
 	// cleanup time!
-	while (list_size(drives) > 0)
-	{
-		removedrive(0);
-	}
+	while (drives != NULL)
+		removedrive(drives);
+
 	free(filename);
 	
 	return 0;

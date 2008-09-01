@@ -23,6 +23,8 @@ For more details see the file COPYING.
 Changes:
 	2008/08/25, Stanislav Maslovski:
 	    Fixed segfaults when properties "path" or "command" are not defined.
+	2008/08/31:
+	    Adapted for simplified lists.
 */
 
 
@@ -114,6 +116,7 @@ void parsedrive(xmlNodePtr cur)
 	int i;
 	drive * d;
 	xmlChar * data;
+	list * tail[NUM_DATA_TYPES];
 	
 	data = xmlGetProp(cur, "path");
 	if (!data)
@@ -132,9 +135,8 @@ void parsedrive(xmlNodePtr cur)
 
 	d->filename = data;
 	for (i=0; i<NUM_DATA_TYPES; i++)
-	{
-		d->commands[i] = NULL;
-	}
+		tail[i] = d->commands[i] = NULL;
+
 	d->dontexecute = dontrunfirst;
 	d->mediachange = 1;
 	
@@ -148,19 +150,21 @@ void parsedrive(xmlNodePtr cur)
 			{
 				if (data = xmlGetProp(cur, "command"))
 				{
-					d->commands[i] = list_push(d->commands[i], data);
-					if (d->commands[i] == NULL)
+					tail[i] = list_push(d->commands[i], tail[i], data);
+					if (tail[i] == NULL)
 					{
 						syslog(LOG_ERR, "Error: Couldn't allocate memory");
 						exit(1);
 					}
+					if (d->commands[i] == NULL)
+						d->commands[i] = tail[i];
 				}
 				break;
 			}
 		}
 		cur = cur->next;
 	}
-	drives = list_push(drives, d);
+	drives = list_push(drives, NULL, d);
 	if (drives == NULL)
 	{
 		syslog(LOG_ERR, "Error: Couldn't allocate memory");
