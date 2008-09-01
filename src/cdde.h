@@ -23,7 +23,7 @@ For more details see the file COPYING
 #ifndef __cdde_h__
 #define __cdde_h__
 
-#define NUM_DATA_TYPES 7
+#define NUM_DATA_TYPES 8
 #define DATA_AUDIO 0
 #define DATA_DATA 1
 #define DATA_DVD 2
@@ -31,6 +31,7 @@ For more details see the file COPYING
 #define DATA_BLANK 4
 #define DATA_VCD 5
 #define DATA_SVCD 6
+#define DATA_UNKNOWN 7
 
 #define DEFAULT_SLEEP_N 5000000
 #define DEFAULT_SLEEP_S "5000000"
@@ -62,6 +63,7 @@ typedef struct _drive
 {
 	char * filename;
 	list * commands[NUM_DATA_TYPES];
+	int cmdtype;
 	int dontexecute;
 	int mediachange;
 } drive;
@@ -75,7 +77,7 @@ typedef struct _drive
 void sighup(int signum);
 
 // executes all commands for a related disc type
-void executeall(drive * d, int cmdtype);
+void executeall(drive * d);
 
 // determine if the device has a directory in its top level
 //

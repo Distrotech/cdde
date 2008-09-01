@@ -31,6 +31,8 @@ Changes:
 	    Open device in blocking mode in disc_has_dir().
 	2008/08/31:
 	    Adapted for simplified lists.
+	2008/09/01:
+	    Clean up disc checking code.
 */
 
 
@@ -59,7 +61,7 @@ Changes:
 ///////////////////////
 // globals
 ///////////////////////
-char * datatags[] = { "audio", "data", "dvd", "mixed", "blank", "vcd", "svcd" };
+char * datatags[] = { "audio", "data", "dvd", "mixed", "blank", "vcd", "svcd", "unknown" };
 extern int errno; // for error checking
 char * filename = NULL; // the config file filename
 int keeprunning = 1; // keep checking drives
@@ -127,14 +129,14 @@ void sighup(int signum)
 
 
 // executes all commands for a related disc type
-void executeall(drive * d, int cmdtype)
+void executeall(drive * d)
 {
 	list * entry;
 	char * command;
 
-	for (entry = d->commands[cmdtype]; entry != NULL; entry = list_next(entry))
+	for (entry = d->commands[d->cmdtype]; entry != NULL; entry = list_next(entry))
 	{
-    		command = replace(list_get(entry), "%dev%", d->filename);
+		command = replace(list_get(entry), "%dev%", d->filename);
 		if (strstr(command, "%mnt%"))
 		{
 			// get fstab info on where the device's mount point is
@@ -315,21 +317,8 @@ int checkdrive(drive * d)
 
 			d->dontexecute = 1;
 
-			// see if we can read the disc's table of contents (TOC).
-			status = ioctl(fd, CDROMREADTOCHDR, &th);
-			if (status != 0)
-			{
-				// release the device
-				close(fd);
-
-				if (verbose) syslog(LOG_INFO, "Can't read disc TOC. The disc is either a blank, or has a broken TOC.");
-				executeall(d, DATA_BLANK);
-				break;
-			}
-
 			// read disc status info
 			status = ioctl(fd, CDROM_DISC_STATUS, CDSL_CURRENT);
-
 			// release the device
 			close(fd);
 
@@ -337,40 +326,42 @@ int checkdrive(drive * d)
 			{
 				case CDS_AUDIO:
 					// found a audio cd
-					if (verbose) syslog(LOG_INFO, "Detected an audio CD!");
-					executeall(d, DATA_AUDIO);
+					d->cmdtype = DATA_AUDIO;
 					break;
 				case CDS_DATA_1:
 				case CDS_DATA_2:
 					// found a data cd
 					if (disc_has_dir(d->filename, "video_ts") != 0)
-					{
-						if (verbose) syslog(LOG_INFO, "Detected a DVD!");
-						executeall(d, DATA_DVD);
-					} else if (disc_has_dir(d->filename, "vcd") != 0) {
-						if (verbose) syslog(LOG_INFO, "Detected a VCD!");
-						executeall(d, DATA_VCD);
-					} else if (disc_has_dir(d->filename, "svcd") != 0) {
-						if (verbose) syslog(LOG_INFO, "Detected a SVCD!");
-						executeall(d, DATA_SVCD);
-					} else {
-						if (verbose) syslog(LOG_INFO, "Detected a data CD!");
-						executeall(d, DATA_DATA);
-					}
+						d->cmdtype = DATA_DVD;
+					else if (disc_has_dir(d->filename, "vcd") != 0)
+						d->cmdtype = DATA_VCD;
+					else if (disc_has_dir(d->filename, "svcd") != 0)
+						d->cmdtype = DATA_SVCD;
+					else
+						d->cmdtype = DATA_DATA;
 					break;
 				case CDS_MIXED:
 					// found a mixed cd
-					if (verbose) syslog(LOG_INFO, "Detected a mixed audio/data CD!");
-					executeall(d, DATA_MIXED);
+					d->cmdtype = DATA_MIXED;
+					break;
+				case CDS_NO_INFO:
+					// black cd
+					d->cmdtype = DATA_BLANK;
 					break;
 				default:
-					if (verbose) syslog(LOG_INFO, "Could not determine disc type: Doing nothing!");
-					break;
+					// unknown cd type
+					d->cmdtype = DATA_UNKNOWN;
 			}
+
+			if (verbose) syslog(LOG_INFO, "Found %s disc!", datatags[d->cmdtype]);
+			executeall(d);
 			break;
+
 		case CDS_NO_INFO:
 			// drive doesnt support querying, so this program will never work on that drive.
 			syslog(LOG_WARNING, "Warning: %s does not support status queries.\n", filename);
+			close(fd);
+			return -1;
 		default:
 			// release the device
 			d->dontexecute = 0;
