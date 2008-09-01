@@ -279,7 +279,7 @@ int checkdrive(drive * d)
 	fd = open(d->filename, O_RDONLY | O_NONBLOCK);
 	if (fd < 0)
 	{
-		syslog(LOG_ERR, "Error: Couldn't open %s: ", d->filename);
+		syslog(LOG_ERR, "Error: Couldn't open %s", d->filename);
 		return -1;
 	}
 
