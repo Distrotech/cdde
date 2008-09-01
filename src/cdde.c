@@ -345,7 +345,7 @@ int checkdrive(drive * d)
 					d->cmdtype = DATA_MIXED;
 					break;
 				case CDS_NO_INFO:
-					// black cd
+					// blank cd
 					d->cmdtype = DATA_BLANK;
 					break;
 				default:
