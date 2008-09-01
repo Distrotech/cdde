@@ -25,6 +25,8 @@ Changes:
 	    Fixed segfaults when properties "path" or "command" are not defined.
 	2008/08/31:
 	    Adapted for simplified lists.
+	2008/09/01:
+	    Simplify saveconfig().
 */
 
 
@@ -180,7 +182,7 @@ int saveconfig(char * filename)
 	xmlNodePtr cur;
 	xmlNodePtr root;
 	xmlNodePtr subroot;
-	int retval = 0;
+	int i, retval = 0;
 	
 	// create the root
 	root = xmlNewNode(NULL, (xmlChar *) "cdde");
@@ -193,39 +195,14 @@ int saveconfig(char * filename)
 	xmlAddChild(root, subroot);
 
 	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "audio");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo An audio cd was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "data");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A data cd was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "dvd");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A dvd was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "vcd");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A vcd was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "svcd");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A svcd was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "blank");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A blank cdr/dvdr was inserted.");
-	xmlAddChild(subroot, cur);
-
-	// add commands
-	cur = xmlNewNode(NULL, (xmlChar *) "mixed");
-	xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) "echo A mixed (audio/data) cd was inserted.");
-	xmlAddChild(subroot, cur);
+	for (i = 0; i < NUM_DATA_TYPES; ++i)
+	{
+		char buf[32];
+		cur = xmlNewNode(NULL, (xmlChar *) datatags[i]);
+		sprintf(buf, "xmessage %s disc was inserted.", datatags[i]);
+		xmlSetProp(cur, (xmlChar *) "command", (xmlChar *) buf);
+		xmlAddChild(subroot, cur);
+	}
 
 	// create the document
 	doc = xmlNewDoc("1.0");
