@@ -11,15 +11,16 @@ When cdde is run for the first time, an example xml configuration file
 .br
 <cdde delay="5000000">
   <drive path="/dev/cdrom">
-    <audio command="echo An audio cd was inserted."/>
-    <data command="echo A data cd was inserted."/>
-    <dvd command="echo A dvd was inserted."/>
-    <vcd command="echo A vcd was inserted."/>
-    <svcd command="echo A svcd was inserted."/>
-    <blank command="echo A blank cdr/dvdr was inserted."/>
-    <mixed command="echo A mixed (audio/data) cd was inserted."/>
+    <audio command="xmessage audio disc was inserted."/>
+    <data command="xmessage data disc was inserted."/>
+    <dvd command="xmessage dvd disc was inserted."/>
+    <mixed command="xmessage mixed disc was inserted."/>
+    <blank command="xmessage blank disc was inserted."/>
+    <vcd command="xmessage vcd disc was inserted."/>
+    <svcd command="xmessage svcd disc was inserted."/>
+    <unknown command="xmessage unknown disc was inserted."/>
   </drive>
-.br 
+.br
 </cdde>
 
 This default file is not very useful, and so I suggest you to edit it to your needs before
