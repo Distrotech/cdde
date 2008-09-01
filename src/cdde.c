@@ -360,6 +360,7 @@ int checkdrive(drive * d)
 		case CDS_NO_INFO:
 			// drive doesnt support querying, so this program will never work on that drive.
 			syslog(LOG_WARNING, "Warning: %s does not support status queries.\n", filename);
+			// release the device
 			close(fd);
 			return -1;
 		default:
